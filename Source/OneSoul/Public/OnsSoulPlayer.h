@@ -75,10 +75,8 @@ class AActor* TargetActor;
 private:
 UPROPERTY(VisibleAnywhere)
 USpringArmComponent* SpringArm;
-
 UPROPERTY(VisibleAnywhere)
 UCameraComponent* Camera;
-
 class AController* Controller;
 
 
