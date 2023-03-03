@@ -3,7 +3,7 @@
 
 #include "EnemyBossAnim.h"
 #include "EnemyBoss.h"
-#include "../OneSoulCharacter.h"
+#include "OneSoulCharacter.h"
 #include <Components/CapsuleComponent.h>
 #include "EnemyBossFSM.h"
 

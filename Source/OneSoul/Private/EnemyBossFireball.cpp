@@ -5,7 +5,7 @@
 #include <Components/SphereComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include <Engine/StaticMesh.h>
-#include "../OneSoulCharacter.h"
+#include "OneSoulCharacter.h"
 #include <Kismet/GameplayStatics.h>
 
 // Sets default values

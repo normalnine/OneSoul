@@ -3,7 +3,7 @@
 
 #include "EnemyBossFSM.h"
 #include <Kismet/GameplayStatics.h>
-#include "../OneSoulCharacter.h"
+#include "OneSoulCharacter.h"
 #include "EnemyBoss.h"
 #include "EnemyBossAnim.h"
 #include <AIModule/Classes/AIController.h>
