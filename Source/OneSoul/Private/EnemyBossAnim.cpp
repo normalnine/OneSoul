@@ -45,3 +45,8 @@ void UEnemyBossAnim::AnimNotify_Fireball()
 {
 	enemy->fsm->SpawnFireball();
 }
+
+void UEnemyBossAnim::AnimNotify_FireSpread()
+{
+	enemy->fsm->SpawnFireSpread();
+}

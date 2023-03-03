@@ -11,6 +11,7 @@
 #include <Kismet/KismetMathLibrary.h>
 #include <Components/CapsuleComponent.h>
 #include "EnemyBossFireball.h"
+#include "EnemyBossFireSpread.h"
 
 // Sets default values for this component's properties
 UEnemyBossFSM::UEnemyBossFSM()
@@ -484,4 +485,10 @@ void UEnemyBossFSM::InitAttackPattern()
 void UEnemyBossFSM::SpawnFireball()
 {
 	AEnemyBossFireball* fireball = GetWorld()->SpawnActor<AEnemyBossFireball>(FireballFactory, me->GetMesh()->GetSocketTransform(TEXT("MOUNTAIN_DRAGON_-Ponytail1Socket")));
+}
+
+void UEnemyBossFSM::SpawnFireSpread()
+{
+	AEnemyBossFireSpread* fireSpread = GetWorld()->SpawnActor<AEnemyBossFireSpread>(FireSpreadFactory, me->GetMesh()->GetSocketTransform(TEXT("MOUNTAIN_DRAGON_-Ponytail1Socket")));
+
 }

@@ -60,4 +60,7 @@ public:
 
 	UFUNCTION()
 		void AnimNotify_Fireball();
+
+	UFUNCTION()
+		void AnimNotify_FireSpread();
 };

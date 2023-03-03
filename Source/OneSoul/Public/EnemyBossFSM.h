@@ -63,6 +63,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AEnemyBossFireball> FireballFactory;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AEnemyBossFireSpread> FireSpreadFactory;
+
 	//현재시간
 	float currTime = 0;
 	//대기 상태 기다리는 시간
@@ -140,4 +143,7 @@ public:
 
 	//Fireball 소환
 	void SpawnFireball();
+
+	//FireSpread 소환
+	void SpawnFireSpread();
 };

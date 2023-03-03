@@ -3,6 +3,8 @@
 
 #include "EnemyBossFireSpread.h"
 #include <Engine/StaticMesh.h>
+#include <Kismet/GameplayStatics.h>
+#include "EnemyBoss.h"
 
 // Sets default values
 AEnemyBossFireSpread::AEnemyBossFireSpread()
@@ -23,6 +25,7 @@ void AEnemyBossFireSpread::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	enemy = Cast<AEnemyBoss>(UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyBoss::StaticClass()));
 }
 
 // Called every frame
@@ -30,5 +33,6 @@ void AEnemyBossFireSpread::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	SetActorTransform(enemy->GetMesh()->GetSocketTransform(TEXT("MOUNTAIN_DRAGON_-Ponytail1Socket")));
 }
 
