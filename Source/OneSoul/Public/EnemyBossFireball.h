@@ -30,7 +30,7 @@ public:
 	class UStaticMeshComponent* meshComp;
 
 	UPROPERTY(EditAnywhere)
-	class AOneSoulCharacter* target;
+	class AOnsSoulPlayer* target;
 
 	UPROPERTY(EditAnywhere)
 	FVector dir;

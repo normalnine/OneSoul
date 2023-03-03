@@ -7,7 +7,7 @@
 #include <Engine/StaticMesh.h>
 #include "OneSoulCharacter.h"
 #include <Kismet/GameplayStatics.h>
-
+#include "OnsSoulPlayer.h"
 // Sets default values
 AEnemyBossFireball::AEnemyBossFireball()
 {
@@ -35,7 +35,7 @@ void AEnemyBossFireball::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	target = Cast<AOneSoulCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), AOneSoulCharacter::StaticClass()));
+	target = Cast<AOnsSoulPlayer>(UGameplayStatics::GetActorOfClass(GetWorld(), AOneSoulCharacter::StaticClass()));
 
 	dir = target->GetActorLocation() - GetActorLocation();
 	dir.GetSafeNormal();

@@ -43,7 +43,7 @@ public:
 
 	//Å¸°Ù
 	UPROPERTY(EditAnywhere)
-		class AOneSoulCharacter* target;
+		class AOnsSoulPlayer* target;
 	//³ª
 	UPROPERTY(EditAnywhere)
 		class AEnemyBoss* me;

@@ -86,7 +86,7 @@ public:
 
 	//타깃
 	UPROPERTY(VisibleAnywhere, Category = FSM)
-		class AOneSoulCharacter* target;
+		class AOnsSoulPlayer* target;
 	//소유 액터
 	UPROPERTY()
 		class AEnemy_Skeleton* me;

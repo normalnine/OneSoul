@@ -10,7 +10,7 @@
 #include <AIController.h>
 #include <NavigationSystem.h>
 #include <Kismet/KismetMathLibrary.h>
-
+#include "OnsSoulPlayer.h"
 
 // Sets default values for this component's properties
 UEnemy_Skeleton_FSM::UEnemy_Skeleton_FSM()
@@ -30,7 +30,8 @@ void UEnemy_Skeleton_FSM::BeginPlay()
 
 	auto actor = UGameplayStatics::GetActorOfClass(GetWorld(), AOneSoulCharacter::StaticClass());
 
-	target = Cast<AOneSoulCharacter>(actor);
+	//target = Cast<AOneSoulCharacter>(actor);
+	target = Cast<AOnsSoulPlayer>(UGameplayStatics::GetActorOfClass(GetWorld(), AOnsSoulPlayer::StaticClass()));
 
 	me = Cast<AEnemy_Skeleton>(GetOwner());
 

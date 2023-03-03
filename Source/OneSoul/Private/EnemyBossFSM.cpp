@@ -12,6 +12,7 @@
 #include <Components/CapsuleComponent.h>
 #include "EnemyBossFireball.h"
 #include "EnemyBossFireSpread.h"
+#include "OnsSoulPlayer.h"
 
 // Sets default values for this component's properties
 UEnemyBossFSM::UEnemyBossFSM()
@@ -30,8 +31,7 @@ void UEnemyBossFSM::BeginPlay()
 	Super::BeginPlay();
 
 	//타겟 찾자
-	target = Cast<AOneSoulCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), AOneSoulCharacter::StaticClass()));
-	//나를 찾자
+	target = Cast<AOnsSoulPlayer>(UGameplayStatics::GetActorOfClass(GetWorld(), AOnsSoulPlayer::StaticClass()));	//나를 찾자
 	me = Cast<AEnemyBoss>(GetOwner());
 
 	//anim instance 찾자
