@@ -8,18 +8,26 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/Character.h"
+#include "Components/SceneComponent.h"
 
-AOnsSoulPlayer::AOnsSoulPlayer()
+AOnsSoulPlayer::AOnsSoulPlayer() :
+    BaseTurnRate(45.f),
+	BaseLookUpRate(45.f)
+
 {
-
-	PrimaryActorTick.bCanEverTick = true;
+ 
+   PrimaryActorTick.bCanEverTick = true;
    
    bUseControllerRotationPitch=false;
    bUseControllerRotationRoll=false;
    bUseControllerRotationYaw=false;
 
-   GetCharacterMovement()->bOrientRotationToMovement = true;
-   GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
+   GetCharacterMovement()-> bOrientRotationToMovement = true;
+   GetCharacterMovement()-> RotationRate = FRotator(0.f, 400.f, 0.f);
+   GetCharacterMovement()-> JumpZVelocity = 600.f;
+   GetCharacterMovement()-> AirControl = 0.2f;
 
    SpringArm= CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
    SpringArm->SetupAttachment(GetRootComponent());
@@ -28,6 +36,10 @@ AOnsSoulPlayer::AOnsSoulPlayer()
 
    Camera=CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
    Camera->SetupAttachment(SpringArm);
+   Camera->bUsePawnControlRotation=false;
+
+   Wing=CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Wing"));
+   Wing->SetupAttachment(GetRootComponent());
 
    GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -90.f),FRotator(0.f, 90.f, 0.f));
    GetMesh()->SetRelativeScale3D(FVector(0.1f));
@@ -39,6 +51,8 @@ AOnsSoulPlayer::AOnsSoulPlayer()
    TargetRotationInterpSpeed = 9.f;
 
    bIsTargeting = false;
+   SetParachute = false;
+
 }
 
 void AOnsSoulPlayer::BeginPlay()
@@ -65,20 +79,30 @@ void AOnsSoulPlayer::BeginPlay()
 
 void AOnsSoulPlayer::MoveForward(float Value)
 {
- const FRotator ControlRotation = GetControlRotation();
- const FRotator YawRotation(0.f,ControlRotation.Yaw,0.f);
+	if((Controller != nullptr) && (Value != 0.0f))
+	{
+     const FRotator ControlRotation = GetControlRotation();
+     const FRotator YawRotation(0.f,ControlRotation.Yaw,0.f);
 
- const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
- AddMovementInput(Direction,Value);
+     const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+     AddMovementInput(Direction,Value);
+	}
+
 }
 
 void AOnsSoulPlayer::MoveRight(float Value)
 {
- const FRotator ControlRotation = GetControlRotation();
- const FRotator YawRotatin(0.f,ControlRotation.Yaw,0.f);
+	
+	if ((Controller != nullptr) && (Value != 0.0f))
+	{ 
+	
+     const FRotator ControlRotation = GetControlRotation();
+     const FRotator YawRotatin(0.f,ControlRotation.Yaw,0.f);
 
- const FVector Direction =FRotationMatrix(YawRotatin).GetUnitAxis(EAxis::Y);
- AddMovementInput(Direction,Value);
+     const FVector Direction =FRotationMatrix(YawRotatin).GetUnitAxis(EAxis::Y);
+     AddMovementInput(Direction,Value);
+	
+	}
 }
 
 void AOnsSoulPlayer::Turn(float Value)
@@ -91,6 +115,16 @@ void AOnsSoulPlayer::LookUp(float Value)
  AddControllerPitchInput(Value);
 }
 
+
+void AOnsSoulPlayer::TurnAtRate(float Rate)
+{
+ AddControllerYawInput(Rate*BaseTurnRate*GetWorld()->GetDeltaSeconds());
+}
+
+void AOnsSoulPlayer::LookUpRate(float Rate)
+{
+ AddControllerPitchInput(Rate*BaseLookUpRate*GetWorld()->GetDeltaSeconds());
+}
 
 void AOnsSoulPlayer::ToggleLockOnInput()
 {
@@ -106,6 +140,8 @@ void AOnsSoulPlayer::Tick(float DeltaTime)
 		UpdateTargetingControlRotation();
 	}
 
+	//Wings();
+
 }
 
 void AOnsSoulPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -116,6 +152,8 @@ void AOnsSoulPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis("MoveRight",this,&AOnsSoulPlayer::MoveRight);
 	PlayerInputComponent->BindAxis("Turn",this,&AOnsSoulPlayer::Turn);
 	PlayerInputComponent->BindAxis("LookUp",this,&AOnsSoulPlayer::LookUp);
+	PlayerInputComponent->BindAxis("TurnRate",this,&AOnsSoulPlayer::TurnAtRate);
+	PlayerInputComponent->BindAxis("LookUpRate",this,&AOnsSoulPlayer::LookUpRate);
 
 	PlayerInputComponent->BindAction("Jump",IE_Pressed,this,&AOnsSoulPlayer::Jump);
 	PlayerInputComponent->BindAction("Jump",IE_Released,this,&AOnsSoulPlayer::StopJumping);
@@ -227,5 +265,29 @@ void AOnsSoulPlayer::UpdateTargetingControlRotation()
 		FRotator NewRotation = UKismetMathLibrary::MakeRotator(CurrentRot.Roll, YZ.Pitch, YZ.Yaw);
 
 		Controller->SetControlRotation(NewRotation);
+	}
+}
+void AOnsSoulPlayer:: Wings()
+{
+	if (SetParachute)
+	{
+	  FVector Velo = UKismetMathLibrary::MakeVector(GetVelocity().X,GetVelocity().Y,-300.f);
+
+	  GetCharacterMovement()->AirControl=200.f;
+	  GetCharacterMovement()->GravityScale=0.05f;
+	  GetCharacterMovement()->Velocity = Velo;
+	}
+	else
+	{
+	GetCharacterMovement()->AirControl = 0.2f;
+	GetCharacterMovement()->GravityScale = 1.f;
+	if (GetCharacterMovement()->IsFalling())
+	{
+		SetParachute=true;
+		Wing->SetVisibility(true);
+	}
+	
+	Wing->SetVisibility(false);
+
 	}
 }
